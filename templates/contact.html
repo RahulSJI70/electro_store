@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container py-5" style="max-width:900px;">
+
+    <h2 class="fw-bold text-center mb-4">📞 Contact Us</h2>
+
+    <div class="row g-4">
+
+        <!-- FORM -->
+        <div class="col-md-7">
+            <div class="card p-4 shadow-sm">
+
+                <form method="POST">
+
+                    <div class="mb-3">
+                        <label class="fw-semibold">Name</label>
+                        <input type="text" name="name" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-semibold">Email</label>
+                        <input type="email" name="email" class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="fw-semibold">Message</label>
+                        <textarea name="message" rows="4" class="form-control" required></textarea>
+                    </div>
+
+                    <button class="btn btn-primary w-100">Send Message</button>
+
+                </form>
+
+            </div>
+        </div>
+
+        <!-- INFO -->
+        <div class="col-md-5">
+
+            <div class="card p-4 shadow-sm h-100">
+
+                <h5 class="fw-bold mb-3">Get in Touch</h5>
+
+                <p>📍 Kochi, Kerala, India</p>
+
+                <p>
+                    📧 <a href="mailto:support@electrostore.com">
+                        support@electrostore.com
+                    </a>
+                </p>
+
+                <p>
+                    📞 <a href="tel:+919876543210">
+                        +91 98765 43210
+                    </a>
+                </p>
+
+                <hr>
+
+                <p class="text-muted">
+                    We usually respond within 24 hours.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

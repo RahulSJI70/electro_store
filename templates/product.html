@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.name or product.name }}</title>
+
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+    .thumb-img:hover {
+    border: 2px solid #2874f0;
+    transform: scale(1.05);
+    transition: 0.2s;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="container-fluid bg-light px-5">
+    <div class="d-flex justify-content-between align-items-center py-3">
+        <h2 class="fw-bold text-primary">Electro</h2>
+
+        <div>
+            <a href="{{ url_for('home') }}" class="me-3">Home</a>
+            <a href="{{ url_for('shop') }}" class="me-3">Shop</a>
+            <a href="{{ url_for('cart') }}">Cart ({{ cart|length }})</a>
+        </div>
+    </div>
+</div>
+
+<!-- PRODUCT DETAIL -->
+ <div class="container py-5">
+
+    <div class="row g-5">
+
+        <!-- IMAGE SECTION -->
+        <!-- IMAGE SECTION -->
+<div class="col-md-5 text-center">
+
+    <!-- MAIN IMAGE -->
+    {% if product.images and product.images|length > 0 %}
+        <img id="mainImage"
+             src="{{ url_for('static', filename=product.images[0].image) }}"
+             class="img-fluid border rounded p-3 shadow-sm"
+             style="max-height:400px;">
+    {% elif product.image %}
+        <img id="mainImage"
+             src="{{ url_for('static', filename=product.image) }}"
+             class="img-fluid border rounded p-3 shadow-sm"
+             style="max-height:400px;">
+    {% else %}
+        <img id="mainImage"
+             src="{{ url_for('static', filename='img/default.png') }}"
+             class="img-fluid border rounded p-3 shadow-sm"
+             style="max-height:400px;">
+    {% endif %}
+
+    <!-- THUMBNAILS -->
+    <div class="mt-3 d-flex justify-content-center flex-wrap gap-2">
+
+        {% if product.images and product.images|length > 0 %}
+            {% for img in product.images %}
+                <img src="{{ url_for('static', filename=img.image) }}"
+                     class="thumb-img"
+                     style="width:70px; height:70px; object-fit:cover; cursor:pointer; border:2px solid #ddd; border-radius:6px;"
+                     onclick="changeImage(this)">
+            {% endfor %}
+
+        {% elif product.image %}
+            <img src="{{ url_for('static', filename=product.image) }}"
+                 style="width:70px;">
+
+        {% else %}
+            <img src="{{ url_for('static', filename='img/default.png') }}"
+                 style="width:70px;">
+        {% endif %}
+
+    </div>
+
+</div>
+
+        <!-- PRODUCT DETAILS -->
+        <div class="col-md-7">
+
+            <h2 class="fw-bold">{{ product.name or product.name }}</h2>
+            <p class="text-muted">{{ product.category }}</p>
+
+            <!-- RATING -->
+            <div class="mb-2">
+                {% for i in range(5) %}
+                    {% if i < product.rating|int %}
+                        <i class="fas fa-star text-warning"></i>
+                    {% else %}
+                        <i class="fas fa-star text-secondary"></i>
+                    {% endif %}
+                {% endfor %}
+                <span class="ms-2 text-muted">(120 reviews)</span>
+            </div>
+
+            {% set offer = product.get_offer() %}
+
+            <!-- PRICE -->
+            {% if offer %}
+                <div class="mb-2">
+                    <span class="badge bg-danger fs-6">
+                        🔥 {{ offer.discount_percentage }}% OFF
+                    </span>
+                </div>
+
+                <h3>
+                    <span class="text-muted" style="text-decoration: line-through;">
+                        ₹{{ "{:,.0f}".format(product.price) }}
+                    </span>
+
+                    <span class="text-success fw-bold ms-2">
+                        ₹{{ "{:,.0f}".format(product.get_discounted_price()) }}
+                    </span>
+                </h3>
+
+                <p class="text-success fw-semibold">
+                    You save ₹{{ "{:,.0f}".format(product.price - product.get_discounted_price()) }}
+                </p>
+            {% else %}
+                <h3 class="text-primary">
+                    ₹{{ "{:,.0f}".format(product.price) }}
+                </h3>
+            {% endif %}
+
+            <!-- OFFERS BOX -->
+            <div class="bg-light p-3 rounded mb-3 shadow-sm">
+                <h6 class="fw-bold">🎁 Available Offers</h6>
+                <ul class="mb-0">
+                    <li>10% Instant Discount on Bank Cards</li>
+                    <li>Free Delivery Available</li>
+                    <li>Cash on Delivery Supported</li>
+                </ul>
+            </div>
+
+            <!-- DELIVERY CHECK -->
+            <div class="mb-3">
+                <input type="text" class="form-control w-50 d-inline" placeholder="Enter Pincode">
+                <button class="btn btn-outline-primary">Check</button>
+            </div>
+
+            <!-- DESCRIPTION -->
+            <p class="text-muted">
+                This is a high-quality product with excellent performance and durability.
+                Perfect for daily use.
+            </p>
+
+            <!-- BUTTONS -->
+            <div class="d-flex gap-3 mt-4">
+
+                <a href="{{ url_for('add_to_cart', id=product.id) }}"
+                   class="btn btn-warning rounded-pill px-4 py-2 shadow">
+                    <i class="fas fa-shopping-cart me-2"></i> Add To Cart
+                </a>
+
+                <a href="{{ url_for('add_to_wishlist', id=product.id) }}"
+                   class="btn btn-outline-danger rounded-pill px-4 py-2">
+                    <i class="fas fa-heart me-2"></i> Wishlist
+                </a>
+
+            </div>
+
+            <!-- HIGHLIGHTS -->
+            <div class="mt-4">
+                <h5 class="fw-bold">Highlights</h5>
+                <ul>
+                    <li>Premium Build Quality</li>
+                    <li>High Performance</li>
+                    <li>Fast Charging</li>
+                    <li>1 Year Warranty</li>
+                </ul>
+            </div>
+
+        </div>
+
+    </div>
+
+    <hr class="my-5">
+
+    <!-- DESCRIPTION SECTION -->
+    <div>
+        <h4>Product Description</h4>
+        <p>
+            {{ product.description or "This product is designed with top quality materials and advanced technology to ensure long-lasting performance." }}
+        </p>
+    </div>
+
+    <hr class="my-5">
+
+    <!-- REVIEWS -->
+    <div>
+        <h4>Customer Reviews</h4>
+
+        <div class="border p-3 rounded mb-2">
+            <strong>Rahul</strong> ⭐⭐⭐⭐⭐
+            <p>Excellent product, totally worth it.</p>
+        </div>
+
+        <div class="border p-3 rounded mb-2">
+            <strong>Akash</strong> ⭐⭐⭐⭐
+            <p>Good quality and fast delivery.</p>
+        </div>
+
+    </div>
+
+</div>
+</div>
+
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+<script>
+function changeImage(el) {
+    document.getElementById("mainImage").src = el.src;
+}
+</script>
+</body>
+</html>

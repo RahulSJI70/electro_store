@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+
+            <div class="card shadow-lg border-0 rounded-4 p-4">
+
+                <h3 class="mb-4 text-center fw-bold">
+                    ➕ Add New Product
+                </h3>
+
+                <form method="POST" enctype="multipart/form-data">
+
+                    <!-- PRODUCT NAME -->
+                    <label>Short Name</label>
+<input type="text" name="short_name" class="form-control" placeholder="Short product name">
+<label>Full Product Name</label>
+<input type="text" name="name" class="form-control">
+
+                    <!-- PRICE -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Price (₹)</label>
+                        <input type="number" name="price" class="form-control rounded-3"
+                               placeholder="Enter price" required>
+                    </div>
+
+                    <!-- CATEGORY -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Category</label>
+                        <select name="category" class="form-select rounded-3" required>
+                            <option value="">Select Category</option>
+                            <option value="Mobiles">Mobiles</option>
+                            <option value="Computers">Computers</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Tablets">Tablets</option>
+                            <option value="Camera">Camera</option>
+                            <option value="Watch">Watch</option>
+
+                        </select>
+                    </div>
+
+                    <!-- IMAGE -->
+                    <!-- IMAGE -->
+<form method="POST" enctype="multipart/form-data">
+
+    <!-- other fields -->
+
+    <div class="mb-3">
+        <label class="form-label">Upload Images</label>
+        <input type="file" name="images" multiple class="form-control">
+    </div>
+
+    
+
+
+                    <!-- BUTTON -->
+                    <div class="d-grid">
+                        <button class="btn btn-primary rounded-pill py-2">
+                            🚀 Add Product
+                        </button>
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

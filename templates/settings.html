@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+
+    <h2 class="mb-4">⚙️ Settings</h2>
+
+    <div class="card p-4 shadow-sm">
+
+        <!-- USER INFO -->
+        <h5 class="text-muted">Logged in as {{ session['user_name'] }}</h5>
+
+        <!-- SINGLE FORM -->
+        <form method="POST" action="{{ url_for('update_settings') }}">
+
+            <!-- Privacy -->
+            <div class="mb-4">
+                <h5>Account Privacy</h5>
+                <p class="text-muted">Control your account visibility</p>
+
+                <select name="privacy" class="form-control w-50">
+                    <option value="Public" {% if user.privacy == 'Public' %}selected{% endif %}>Public</option>
+                    <option value="Private" {% if user.privacy == 'Private' %}selected{% endif %}>Private</option>
+                </select>
+            </div>
+
+            <!-- Preferences -->
+            <div class="mb-4">
+                <h5>Preferences</h5>
+                <p class="text-muted">Customize your experience</p>
+
+                <!-- DARK MODE -->
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="dark_mode"
+                           {% if user.dark_mode %}checked{% endif %}>
+                    <label class="form-check-label">
+                        Enable Dark Mode 🌙
+                    </label>
+                </div>
+            </div>
+
+            <!-- SAVE BUTTON -->
+            <button class="btn btn-primary">Save Settings</button>
+
+        </form>
+
+        <!-- DELETE ACCOUNT -->
+        <div class="mt-4">
+            <form method="POST" action="/delete-account"
+                  onsubmit="return confirm('Are you sure you want to delete your account?');">
+                <button class="btn btn-danger">
+                    Delete Account
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

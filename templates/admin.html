@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+    <style>
+        body {
+            background: #f5f7fa;
+        }
+
+        .card-box {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .btn {
+            border-radius: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container py-5">
+
+    <h2 class="mb-4">👑 Admin Dashboard</h2>
+
+    <!-- 📊 DASHBOARD -->
+    <h3>📊 Dashboard</h3>
+
+    <div class="row mb-4">
+
+        <div class="col-md-6">
+            <div class="card-box">
+                <h5>Total Orders</h5>
+                <h3>{{ total_orders }}</h3>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card-box">
+                <h5>Total Revenue</h5>
+                <h3>₹{{ total_revenue }}</h3>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 👤 USERS -->
+    <h4>Users</h4>
+
+    <a href="/admin/add-product" class="btn btn-primary mb-3">
+        ➕ Add Product
+    </a>
+
+    <table class="table table-bordered bg-white mb-5">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Admin</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for user in users %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+                {% if user.is_admin %}
+                    <span class="badge bg-success">Admin</span>
+                {% else %}
+                    <span class="badge bg-secondary">User</span>
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- 🧑‍💼 SELLER REQUESTS -->
+<h4 class="mt-4">Seller Requests</h4>
+
+{% if seller_requests %}
+    <table class="table table-bordered bg-white mb-5">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Email</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for user in seller_requests %}
+        <tr>
+            <td>{{ user.id }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+                <a href="{{ url_for('approve_seller', id=user.id) }}"
+                   class="btn btn-success btn-sm">
+                    ✅ Approve
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p class="text-muted">No seller requests</p>
+{% endif %}
+
+    <!-- 🛍️ PRODUCTS -->
+    <h4>Products</h4>
+
+    <table class="table table-bordered bg-white mb-5">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Price</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for product in products %}
+        <tr>
+            <td>{{ product.id }}</td>
+            <td>{{ product.name }}</td>
+            <td>₹{{ product.price }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- 📦 ORDERS -->
+    <h4>Orders</h4>
+
+    <table class="table table-bordered bg-white">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>User</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>{{ order.id }}</td>
+            <td>{{ order.user_id }}</td>
+            <td>₹{{ order.price }}</td>
+
+            <td>
+                {% if order.status == "Placed" %}
+                    <span class="badge bg-warning text-dark">Placed</span>
+                {% elif order.status == "Shipped" %}
+                    <span class="badge bg-info text-dark">Shipped</span>
+                {% elif order.status == "Delivered" %}
+                    <span class="badge bg-success">Delivered</span>
+                {% elif order.status == "Cancelled" %}
+                    <span class="badge bg-danger">Cancelled</span>
+                {% endif %}
+            </td>
+
+            <td>
+                <a href="/update-status/{{ order.id }}/Placed" class="btn btn-sm btn-warning">Placed</a>
+                <a href="/update-status/{{ order.id }}/Shipped" class="btn btn-sm btn-info">Shipped</a>
+                <a href="/update-status/{{ order.id }}/Delivered" class="btn btn-sm btn-success">Delivered</a>
+                <a href="/update-status/{{ order.id }}/Cancelled" class="btn btn-sm btn-danger">Cancel</a>
+            </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+</body>
+</html>

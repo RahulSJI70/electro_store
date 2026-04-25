@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h3>Edit Address</h3>
+
+    <form method="POST">
+
+        <input type="text" name="name" value="{{ address.name }}" class="form-control mb-2" required>
+
+        <input type="text" name="phone" value="{{ address.phone }}" class="form-control mb-2" required>
+
+        <textarea name="address" class="form-control mb-2" required>{{ address.address }}</textarea>
+
+        <input type="text" name="city" value="{{ address.city }}" class="form-control mb-2" required>
+
+        <input type="text" name="pincode" value="{{ address.pincode }}" class="form-control mb-2" required>
+
+        <button class="btn btn-success">Update Address</button>
+
+    </form>
+
+</div>
+
+{% endblock %}

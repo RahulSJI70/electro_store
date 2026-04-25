@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Shop</title>
+
+    <!-- CSS -->
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="container-fluid bg-light px-5">
+    <div class="d-flex justify-content-between align-items-center py-3">
+        <h2 class="fw-bold text-primary">Electro</h2>
+
+        <div>
+            <a href="{{ url_for('home') }}" class="me-3">Home</a>
+            <a href="{{ url_for('cart') }}">Cart ({{ cart|length }})</a>
+        </div>
+    </div>
+</div>
+
+<!-- SHOP TITLE -->
+<div class="container py-4 text-center">
+    <h2 class="fw-bold">Shop Products</h2>
+</div>
+
+<div class="d-flex justify-content-between mb-3">
+
+    <div>
+        <strong>{{ products|length }}</strong> products found
+    </div>
+
+    <div>
+        <select onchange="location = this.value" class="form-select form-select-sm">
+
+            <option>Sort By</option>
+
+            <option value="/shop?sort=low">Price Low → High</option>
+            <option value="/shop?sort=high">Price High → Low</option>
+
+        </select>
+    </div>
+
+</div>
+
+<div class="d-md-none mb-3 text-end">
+
+    <button class="btn btn-primary" onclick="openFilter()">
+        <i class="fas fa-filter"></i> Filters
+    </button>
+
+</div>
+
+<!-- PRODUCTS -->
+<div class="container-fluid pb-5">
+    <div class="row">
+
+        <!-- FILTER SIDEBAR -->
+        <div class="col-md-3 d-none d-md-block">
+            <div class="border p-3 rounded shadow-sm filters-box">
+
+                <h5 class="fw-bold mb-3">🔍 Filters</h5>
+                <a href="/shop" class="btn btn-sm btn-outline-danger w-100 mb-2">
+                   ❌ Clear Filters
+                </a>
+                <h6 class="mt-3">Category</h6>
+
+                {% for cat, count in categories %}
+                <a href="{{ url_for('shop', category=cat) }}" 
+                   class="d-block category-link">
+                    {{ cat }} ({{ count }})
+                </a>
+                {% endfor %}
+
+                <h6 class="mt-3">Price</h6>
+                <a href="/shop?category={{ request.args.get('category') }}&max_price=10000" class="d-block">
+                   Under ₹10,000
+                </a>
+                <a href="/shop?category={{ request.args.get('category') }}&min_price=10000&max_price=50000" class="d-block">₹10k - ₹50k</a>
+                <a href="/shop?category={{ request.args.get('category') }}&min_price=50000" class="d-block">Above ₹50k</a>
+
+                <h6 class="mt-3">Sort</h6>
+                <a href="/shop?category={{ request.args.get('category') }}&sort=low" class="d-block">Low → High</a>
+                <a href="/shop?category={{ request.args.get('category') }}&sort=high" class="d-block">High → Low</a>
+                <a href="/shop?max_price=10000{% if request.args.get('category') %}&category={{ request.args.get('category') }}{% endif %}" class="d-block">
+                   Under ₹10,000
+                </a>
+            </div>
+        </div>
+
+        <!-- PRODUCTS -->
+        <div class="col-md-9">
+            
+    <h5 class="mb-3">
+        {% if request.args %}
+            Showing filtered results
+        {% else %}
+            All Products
+        {% endif %}
+    </h5>
+   
+    {% if request.args.get('search') %}
+        <h6 class="text-muted">
+            Results for "{{ request.args.get('search') }}"
+        </h6>
+    {% endif %}
+
+    <div class="row g-4">
+    
+        {% if not products %}
+        <div class="col-12 text-center py-5">
+            <h5><h5>No products found 😢</h5>
+<p class="text-muted">Try changing filters or search</p></h5>
+        </div>
+        {% endif %}
+
+        {% for product in products %}
+
+       <div class="col-6 col-md-4 col-lg-3">
+<div class="product-card">
+
+    <!-- IMAGE -->
+    <div class="product-img">
+        <a href="{{ url_for('product_detail', id=product.id) }}">
+            {% if product.images %}
+    <img src="{{ url_for('static', filename=product.images[0].image) }}">
+{% else %}
+    <img src="{{ url_for('static', filename='img/default.png') }}">
+{% endif %}
+        </a>
+
+        <!-- ❤️ Wishlist -->
+        <a href="{{ url_for('add_to_wishlist', id=product.id) }}" class="wishlist-btn">
+            <i class="fas fa-heart"></i>
+        </a>
+    </div>
+
+    <!-- TEXT -->
+    <div class="product-info">
+        <h6 class="product-name">{{ product.short_name or product.name }}</h6>
+        <p class="product-category">{{ product.category }}</p>
+
+        <div class="price">
+            ₹{{ "{:,.0f}".format(product.price) }}
+        </div>
+    </div>
+
+</div>   
+</div>
+
+
+            
+
+        {% endfor %}
+
+    </div>
+</div>
+    </div>
+</div>
+<!-- JS -->
+<script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+<script>
+document.querySelectorAll('.category-link').forEach(link => {
+    link.addEventListener('click', function () {
+        let menu = document.getElementById('allCat');
+
+        let bsCollapse = bootstrap.Collapse.getInstance(menu);
+
+        if (bsCollapse) {
+            bsCollapse.hide();
+        }
+    });
+});
+</script>
+<div id="filterOverlay" class="filter-overlay" onclick="closeFilter()"></div>
+<!-- 🔥 FILTER POPUP -->
+<div id="filterPopup" class="filter-popup">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+    <strong>Filters</strong>
+    <a href="/shop" class="text-danger">Clear</a>
+</div>
+
+    <div style="
+    width:40px;
+    height:5px;
+    background:#ccc;
+    border-radius:10px;
+    margin:auto;
+    margin-bottom:10px;
+"></div>
+
+    <div class="filter-content">
+
+        <!-- HEADER -->
+        <div class="d-flex justify-content-between mb-3">
+            <h5>Filters</h5>
+            <button onclick="closeFilter()" class="btn-close"></button>
+        </div>
+
+        <!-- CATEGORY -->
+        <h6>Category</h6>
+        {% for cat, count in categories %}
+        <a href="{{ url_for('shop', category=cat) }}" class="d-block mb-1">
+            {{ cat }} ({{ count }})
+        </a>
+        {% endfor %}
+
+        <hr>
+
+        <!-- PRICE -->
+        <h6>Price</h6>
+        <a href="/shop?max_price=10000" class="d-block">Under ₹10k</a>
+        <a href="/shop?min_price=10000&max_price=50000" class="d-block">₹10k - ₹50k</a>
+        <a href="/shop?min_price=50000" class="d-block">Above ₹50k</a>
+
+        <hr>
+
+        <!-- SORT -->
+        <h6>Sort</h6>
+        <a href="/shop?sort=low" class="d-block">Low → High</a>
+        <a href="/shop?sort=high" class="d-block">High → Low</a>
+
+    </div>
+
+</div>
+
+<script>
+function openFilter() {
+    document.getElementById("filterPopup").classList.add("active");
+    document.getElementById("filterOverlay").classList.add("active");
+    document.body.classList.add("no-scroll");
+}
+
+function closeFilter() {
+    document.getElementById("filterPopup").classList.remove("active");
+    document.getElementById("filterOverlay").classList.remove("active");
+    document.body.classList.remove("no-scroll");
+}
+</script>
+
+</body>
+</html>

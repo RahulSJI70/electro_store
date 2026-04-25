@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up</title>
+
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa, #e4ecf7);
+            height: 100vh;
+        }
+
+        .signup-box {
+            max-width: 420px;
+            margin: auto;
+            margin-top: 60px;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .form-control {
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .btn-primary {
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="signup-box">
+
+    <h3 class="text-center mb-4 fw-bold">Create Account 🚀</h3>
+
+    <form method="POST">
+
+        <!-- NAME -->
+        <div class="mb-3">
+            <label>Full Name</label>
+            <input type="text" name="name" class="form-control" placeholder="Enter your name" required>
+        </div>
+
+        <!-- EMAIL -->
+        <div class="mb-3">
+            <label>Email</label>
+            <input type="email" name="email" class="form-control" placeholder="Enter your email" required>
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="mb-3">
+            <label>Password</label>
+            <input type="password" name="password" class="form-control" placeholder="Create password" required>
+        </div>
+
+        <!-- CONFIRM PASSWORD -->
+        <div class="mb-3">
+            <label>Confirm Password</label>
+            <input type="password" name="confirm_password" class="form-control" placeholder="Repeat password" required>
+        </div>
+
+        <!-- PHONE -->
+        <div class="mb-3">
+            <label>Phone Number</label>
+            <input type="text" name="phone" class="form-control" placeholder="Enter your phone number" required>
+        </div>
+
+        <!-- BUTTON -->
+        <button class="btn btn-primary w-100 mt-2">
+            Sign Up
+        </button>
+
+    </form>
+
+    <div class="text-center mt-3">
+        <small>Already have an account? 
+            <a href="{{ url_for('login') }}">Login</a>
+        </small>
+    </div>
+
+</div>
+
+</body>
+</html>

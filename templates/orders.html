@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Orders</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+</head>
+
+<body>
+
+<div class="container py-5">
+
+    {% if orders %}
+    
+ {% for order in orders %}
+<div class="mb-4 p-4 border rounded shadow-sm">
+
+    <h5>Order #{{ order.id }}</h5>
+    <p>Total: ₹{{ order.price }}</p>
+
+    <!-- 🔥 STATUS TEXT -->
+    <p>
+        Status:
+        <strong>
+            {{ order.status }}
+        </strong>
+    </p>
+
+    <!-- 🔥 PROGRESS BAR -->
+    <div class="progress mb-3" style="height: 20px;">
+
+        {% if order.status == "Placed" %}
+            <div class="progress-bar bg-warning" style="width: 33%">Placed</div>
+
+        {% elif order.status == "Shipped" %}
+            <div class="progress-bar bg-info" style="width: 66%">Shipped</div>
+
+        {% elif order.status == "Delivered" %}
+            <div class="progress-bar bg-success" style="width: 100%">Delivered</div>
+        
+
+        {% elif order.status == "Cancelled" %}
+            <div class="progress-bar bg-danger" style="width: 100%">Cancelled</div>
+        {% endif %}
+
+    </div>
+
+    <!-- 🔥 ITEMS -->
+    {% for item in order.items %}
+        <div>
+            {{ item.product.name }} (x{{ item.quantity }})
+        </div>
+    {% endfor %}
+
+    <hr>
+
+    <!-- 🔥 TEST BUTTONS (REMOVE LATER) -->
+    <a href="/update-status/{{ order.id }}/Placed" class="btn btn-sm btn-warning">Placed</a>
+    <a href="/update-status/{{ order.id }}/Shipped" class="btn btn-sm btn-info">Shipped</a>
+    <a href="/update-status/{{ order.id }}/Delivered" class="btn btn-sm btn-success">Delivered</a>
+
+    {% if order.status != "Delivered" and order.status != "Cancelled" %}
+    <a href="/cancel-order/{{ order.id }}" class="btn btn-sm btn-danger">
+        Cancel Order
+    </a>
+{% endif %}
+
+</div>
+{% endfor %}  
+
+{% else %}
+    <p>No orders yet 😢</p>
+{% endif %}
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Account</title>
+    
+    <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
+</head>
+
+<body>
+
+
+
+    <div class="card p-4">
+        
+        <h4>User Details</h4>
+    
+        <hr>
+
+        <p><strong>Name:</strong> {{ user.name }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p><strong>Phone:</strong> {{ user.phone }}</p>
+
+        <hr>
+
+        <h5>Edit Profile</h5>
+
+<form method="POST" action="{{ url_for('update_account') }}" enctype="multipart/form-data">
+    
+    
+
+    <div class="mb-3">
+        <label>Name</label>
+        <input type="text" name="name" class="form-control" value="{{ user.name }}">
+    </div>
+
+    <div class="mb-3">
+        <label>Email</label>
+        <input type="email" name="email" class="form-control" value="{{ user.email }}">
+    </div>
+
+    <div class="mb-3">
+        <label>Phone</label>
+        <input type="text" name="phone" class="form-control" value="{{ user.phone }}">
+    </div>
+
+    
+
+    <button class="btn btn-primary">Update</button>
+
+</form>
+
+        <hr>
+
+<h5>Change Password</h5>
+
+<form method="POST" action="{{ url_for('change_password') }}">
+
+    <div class="mb-3">
+        <label>Current Password</label>
+        <input type="password" name="current_password" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>New Password</label>
+        <input type="password" name="new_password" class="form-control" required>
+    </div>
+
+    <div class="mb-3">
+        <label>Confirm Password</label>
+        <input type="password" name="confirm_password" class="form-control" required>
+    </div>
+
+    <button class="btn btn-danger">Change Password</button>
+
+</form>
+
+    </div>
+
+</div>
+
+<script>
+document.getElementById("imageInput").addEventListener("change", function(event) {
+    const file = event.target.files[0];
+
+    if (file) {
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+            document.getElementById("preview").src = e.target.result;
+        };
+
+        reader.readAsDataURL(file);
+    }
+});
+</script>
+
+</body>
+</html>

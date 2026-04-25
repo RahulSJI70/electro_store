@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+
+    <h2 class="mb-4">🔥 Latest Offers</h2>
+
+    <div class="row">
+        {% for offer in offers %}
+
+        <div class="col-md-4">
+            <div class="card shadow-sm p-3 mb-4">
+
+                <h5>{{ offer.title }}</h5>
+
+                <p>{{ offer.description }}</p>
+
+                {% if offer.discount_percentage %}
+                    <span class="badge bg-success">
+                        {{ offer.discount_percentage }}% OFF
+                    </span>
+                {% endif %}
+
+                {% if offer.product %}
+                    <div class="mt-2">
+                        <img src="{{ url_for('static', filename=offer.product.image) }}"
+                             class="img-fluid" style="height:150px">
+
+                        <p class="mt-2">{{ offer.product.name }}</p>
+
+                        <p>
+    <span class="text-muted" style="text-decoration: line-through;">
+        ₹{{ "{:,.0f}".format(offer.product.price) }}
+    </span>
+
+    <span class="text-success fw-bold ms-2">
+        ₹{{ "{:,.0f}".format(offer.product.get_discounted_price()) }}
+    </span>
+</p>
+
+    <a href="{{ url_for('product_detail', id=offer.product.id) }}"
+        class="btn btn-primary btn-sm mt-2">
+   View Product
+</a>
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

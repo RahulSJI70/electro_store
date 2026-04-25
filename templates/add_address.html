@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container mt-5">
+
+    <h3>Add New Address</h3>
+
+    <form method="POST">
+
+        <input type="text" name="name" class="form-control mb-2" placeholder="Full Name" required>
+
+        <input type="text" name="phone" class="form-control mb-2" placeholder="Phone Number" required>
+
+        <textarea name="address" class="form-control mb-2" placeholder="Full Address" required></textarea>
+
+        <input type="text" name="city" class="form-control mb-2" placeholder="City" required>
+
+        <input type="text" name="pincode" class="form-control mb-2" placeholder="Pincode" required>
+
+        <button class="btn btn-success">Save Address</button>
+
+    </form>
+
+</div>
+
+{% endblock %}

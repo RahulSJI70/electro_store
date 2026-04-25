@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container py-5">
+
+    <h2 class="text-center mb-5 fw-bold">❤️ My Wishlist</h2>
+
+    {% if products %}
+    <div class="row g-4">
+
+        {% for product in products %}
+        <div class="col-md-6 col-lg-4 col-xl-3">
+
+            <div class="card border-0 shadow-sm h-100 wishlist-card">
+
+                
+<!-- IMAGE -->
+<div class="text-center p-3">
+
+    {% if product.images and product.images|length > 0 %}
+        <img src="{{ url_for('static', filename=product.images[0].image) }}"
+             class="img-fluid" style="height:180px; object-fit:contain;">
+
+    {% elif product.image %}
+        <img src="{{ url_for('static', filename=product.image) }}"
+             class="img-fluid" style="height:180px; object-fit:contain;">
+
+    {% else %}
+        <img src="{{ url_for('static', filename='img/default.png') }}"
+             class="img-fluid" style="height:180px; object-fit:contain;">
+
+    {% endif %}
+
+</div>
+
+                <!-- BODY -->
+                <div class="card-body text-center">
+
+                    <h6 class="fw-semibold mb-2">{{ product.name }}</h6>
+
+                    <p class="text-primary fw-bold mb-3">₹{{ product.price }}</p>
+
+                    <!-- BUTTONS -->
+                    <div class="d-flex justify-content-center gap-2">
+
+                        <a href="{{ url_for('add_to_cart', id=product.id) }}" 
+                           class="btn btn-success btn-sm px-3">
+                            🛒 Add
+                        </a>
+
+                        <a href="{{ url_for('remove_from_wishlist', id=product.id) }}" 
+                           class="btn btn-outline-danger btn-sm px-3">
+                            ❌ Remove
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        {% endfor %}
+
+    </div>
+
+    {% else %}
+    <div class="text-center mt-5">
+        <h5>No items in wishlist 😢</h5>
+        <a href="/" class="btn btn-primary mt-3">Go Shopping</a>
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- 🔥 CUSTOM STYLE -->
+<style>
+.wishlist-card {
+    transition: 0.3s ease;
+    border-radius: 12px;
+}
+
+.wishlist-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+</style>
+
+{% endblock %}

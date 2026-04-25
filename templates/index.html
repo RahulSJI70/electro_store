@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="utf-8">
+        <title>Electro </title>
+        <meta content="" name="keywords">
+        <meta content="" name="description">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <!-- Google Web Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"> 
+
+        <!-- Icon Font Stylesheet -->
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        <!-- Libraries Stylesheet -->
+        <link rel="stylesheet" href="{{ url_for('static', filename='lib/animate/animate.min.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='lib/owlcarousel/assets/owl.carousel.min.css') }}">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"> 
+        
+        
+    </head>
+
+    <body class="{% if session.get('dark_mode') %}dark-mode{% endif %}">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+  {% for category, message in messages %}
+    <div class="alert alert-{{ category }} text-center m-0">
+        {{ message }}
+    </div>
+  {% endfor %}
+{% endwith %}
+
+<!-- 🔥 SIDE MENU (ADD HERE) -->
+<div id="sideMenu" class="side-menu">
+    <button onclick="closeMenu()" class="close-btn">✖</button>
+
+    <div class="menu-header px-3 py-2">
+    <strong>Hello, {{ session.get('user_name','Guest') }}</strong>
+</div> 
+
+    <div class="menu-items">
+
+        <a href="{{ url_for('account') }}" onclick="closeMenu()">
+           <i class="fas fa-user"></i> My Account
+        </a>
+        <a href="{{ url_for('addresses') }}" onclick="closeMenu()">
+            <i class="fas fa-map-pin"></i> My Address
+        </a>
+        <a href="{{ url_for('notifications') }}" onclick="closeMenu()">
+            <i class="fas fa-bell"></i> Notifications
+        </a>
+        <a href="{{ url_for('offers') }}" onclick="closeMenu()">
+            <i class="fas fa-gift"></i> Offers
+        </a>
+        <a href="{{ url_for('settings') }}" onclick="closeMenu()">
+            <i class="fas fa-cog"></i> Settings
+        </a>
+        <a href="{{ url_for('orders') }}" onclick="closeMenu()">
+            <i class="fas fa-box"></i> Orders
+        </a>
+        <a href="{{ url_for('wishlist') }}" onclick="closeMenu()">
+            <i class="fas fa-heart"></i> Wishlist
+        </a>
+
+        <hr>
+
+        <a href="{{ url_for('logout') }}" class="text-danger" onclick="closeMenu()">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+
+    </div>
+</div>
+
+<!-- OVERLAY -->
+<div id="overlay" onclick="closeMenu()"></div>
+        
+
+
+        
+                        
+        <div class="container-fluid px-5 py-4 d-block desktop-header">
+            <div class="row gx-0 align-items-center text-center">
+                <div class="col-md-4 col-lg-3 text-center text-lg-start">
+                    <div class="d-inline-flex align-items-center header-icons">
+                        
+                    </div>
+                </div>
+                <div class="col-md-4 col-lg-6 text-center">
+                    <div class="position-relative ps-4">
+
+    
+
+</div>
+</div>
+                <div class="col-md-4 col-lg-3 col-12 text-end mt-3 mt-lg-0">
+                    
+                <div class="d-flex justify-content-end align-items-center header-icons">
+    <!-- 🌐 LANGUAGE DROPDOWN (ADD HERE FIRST) -->
+    <div class="dropdown me-3">
+        {% set country = session.get('country','India') %}
+    <button class="btn btn-light d-flex align-items-center"
+            style="gap:5px;"
+        data-bs-toggle="dropdown">
+
+    {% if country == "India" %} 🇮🇳
+    {% elif country == "USA" %} 🇺🇸
+    {% elif country == "UK" %} 🇬🇧
+    {% elif country == "UAE" %} 🇦🇪
+    {% endif %}
+
+    {{ session.get('language','EN') }}
+
+</button>
+
+    <div class="dropdown-menu p-3" style="width:260px;">
+
+        <h6 class="mb-2">Change Language</h6>
+
+        <form method="POST" action="{{ url_for('change_language') }}">
+
+            <!-- LANGUAGES -->
+            {% set lang = session.get('language','EN') %}
+
+            <div class="form-check">
+                <input type="radio" name="language" value="EN" class="form-check-input"
+                {% if lang=='EN' %}checked{% endif %}>
+                <label>English - EN</label>
+            </div>
+
+            <div class="form-check">
+                <input type="radio" name="language" value="HI" class="form-check-input"
+                {% if lang=='HI' %}checked{% endif %}>
+                <label>हिंदी - HI</label>
+            </div>
+
+            <div class="form-check">
+                <input type="radio" name="language" value="TA" class="form-check-input"
+                {% if lang=='TA' %}checked{% endif %}>
+                <label>தமிழ் - TA</label>
+            </div>
+
+            <div class="form-check">
+                <input type="radio" name="language" value="ML" class="form-check-input"
+                {% if lang=='ML' %}checked{% endif %}>
+                <label>മലയാളം - ML</label>
+            </div>
+
+            <div class="form-check">
+                <input type="radio" name="language" value="TE" class="form-check-input"
+                {% if lang=='TE' %}checked{% endif %}>
+                <label>తెలుగు - TE</label>
+            </div>
+
+            <div class="form-check">
+                <input type="radio" name="language" value="KN" class="form-check-input"
+                {% if lang=='KN' %}checked{% endif %}>
+                <label>ಕನ್ನಡ - KN</label>
+            </div>
+
+            <div class="form-check">
+                <input type="radio" name="language" value="BN" class="form-check-input"
+                {% if lang=='BN' %}checked{% endif %}>
+                <label>বাংলা - BN</label>
+            </div>
+
+            <div class="form-check">
+                <input type="radio" name="language" value="MR" class="form-check-input"
+                {% if lang=='MR' %}checked{% endif %}>
+                <label>मराठी - MR</label>
+            </div>
+
+            <hr>
+
+            <!-- COUNTRY -->
+            <div class="mb-2">
+                🇮🇳 You are shopping on 
+                <strong>{{ session.get('country','India') }}</strong>
+            </div>
+
+            <select name="country" class="form-select mb-2">
+                <option value="India">India</option>
+                <option value="UAE">UAE</option>
+                <option value="USA">USA</option>
+                <option value="UK">UK</option>
+            </select>
+
+            <button class="btn btn-primary w-100">Save</button>
+
+        </form>
+
+    </div>
+</div>
+
+    <!-- ❤️ Wishlist -->
+    <a href="{{ url_for('wishlist') }}" 
+       class="text-muted d-flex align-items-center position-relative text-decoration-none me-3">
+
+        <span class="rounded-circle btn-md-square border d-flex align-items-center justify-content-center icon-circle position-relative"
+              style="width:45px;height:45px;">
+
+            <i class="fas fa-heart"></i>
+
+            {% if wishlist %}
+            <span class="icon-badge">
+                {{ wishlist|length }}
+            </span>
+            {% endif %}
+
+        </span>
+    </a>
+
+    <!-- 🔔 Notification -->
+    <a href="{{ url_for('notifications') }}" 
+       class="text-muted d-flex align-items-center position-relative text-decoration-none me-3">
+
+        <span class="rounded-circle btn-md-square border d-flex align-items-center justify-content-center icon-circle position-relative"
+              style="width:45px;height:45px;">
+
+            <i class="fas fa-bell"></i>
+
+            {% if notification_count > 0 %}
+            <span class="icon-badge">
+                {{ notification_count }}
+            </span>
+            {% endif %}
+
+        </span>
+    </a>
+
+    <!-- 🛒 Cart -->
+    <a href="{{ url_for('cart') }}" 
+       class="text-muted d-flex align-items-center position-relative text-decoration-none">
+
+        <span class="rounded-circle btn-md-square border d-flex align-items-center justify-content-center icon-circle position-relative"
+              style="width:45px;height:45px;">
+
+            <i class="fas fa-shopping-cart"></i>
+
+            {% if cart %}
+            <span class="icon-badge">
+                {{ cart|length }}
+            </span>
+            {% endif %}
+
+        </span>
+    </a>
+<!-- PROFILE ICON -->
+<div class="dropdown">
+
+    
+    <button class="border-0 bg-transparent" data-bs-toggle="dropdown">
+
+
+        <div style="
+            width:35px;
+            height:35px;
+            border-radius:50%;
+            background:#333;
+            color:white;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            font-weight:bold;
+            cursor:pointer;
+        ">
+            {{ session.get('user_name','U')[0] }}
+        </div>
+    </button>
+
+    <!-- ✅ FIXED DROPDOWN MENU -->
+    <div class="dropdown-menu dropdown-menu-end">
+
+        <div class="px-0 py-3 text-center border-bottom">
+            <div style="
+                width:50px;
+                height:50px;
+                border-radius:50%;
+                background:#333;
+                color:white;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                font-weight:bold;
+                font-size:18px;
+                margin:auto;
+            ">
+                {{ session.get('user_name','U')[0] }}
+            </div>
+
+            <div class="mt-2 fw-bold">
+                {{ session.get('user_name') }}
+            </div>
+        </div>
+        <a class="dropdown-item" href="{{ url_for('account') }}">
+           <i class="fas fa-user me-2"></i> My Account
+        </a>
+        <a class="dropdown-item" href="{{ url_for('addresses') }}">
+            📍 My Address
+        </a>
+        <a class="dropdown-item" href="{{ url_for('notifications') }}">
+            🔔 Notifications
+        </a>
+        <a class="dropdown-item" href="{{ url_for('offers') }}">
+            🎁 Offers
+        </a>
+        <a class="dropdown-item" href="{{ url_for('settings') }}">
+            ⚙️ Settings
+        </a>
+        <a class="dropdown-item" href="{{ url_for('orders') }}">📦 Orders</a>
+        <a class="dropdown-item" href="{{ url_for('wishlist') }}">❤️ Wishlist</a>
+        
+        <a class="dropdown-item" href="#">❓ Help</a>
+
+        <div class="dropdown-divider"></div>
+
+        <a class="dropdown-item text-danger" href="{{ url_for('logout') }}">
+            🚪 Logout
+        </a>
+
+    </div>
+
+</div>
+    
+    
+
+</div>
+
+
+        </div>
+        <!-- Topbar End -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="container mt-3">
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} text-center">
+            {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}         
+
+<div class="top-search-bar">
+
+    <!-- LOGO -->
+    <span class="logo">Electro</span>
+
+    <!-- SEARCH -->
+    <form action="{{ url_for('shop') }}" method="GET" 
+          class="search-box-advanced">
+
+        <!-- CATEGORY -->
+        <select class="search-category">
+            <option>All</option>
+            <option>Mobiles</option>
+            <option>Computers</option>
+            <option>Camera</option>
+            <option>Watch</option>
+        </select>
+
+        <!-- INPUT -->
+        <input type="text"
+               name="search"
+               class="search-input"
+               placeholder="Search Electronics, Mobiles...">
+
+        <!-- BUTTON -->
+        <button type="submit" class="search-btn">
+            <i class="fas fa-search"></i>
+        </button>
+
+    </form>
+
+</div>
+
+    
+
+
+
+
+        
+{% block content %}
+        <!-- PREMIUM HERO START -->
+<div class="container-fluid py-5 bg-light">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+
+            <!-- LEFT CONTENT -->
+            <div class="col-lg-6 col-12 mb-4">
+
+                
+
+                <h1 class="display-4 fw-bold mb-3">
+                    {{ t('hero_title') }}
+                </h1>
+
+                <p class="text-muted mb-4">
+                    {{ t('hero_desc') }}
+                </p>
+
+                <div class="d-flex gap-3">
+                    <a href="/shop?category=Mobiles" class="btn btn-primary px-4 py-2 rounded-pill">
+                        {{ t('shop_mobiles') }}
+                    </a>
+
+                    <a href="/shop?category=Computers" class="btn btn-outline-dark px-4 py-2 rounded-pill">
+                        {{ t('shop_computers') }}
+                    </a>
+                </div>
+
+            </div>
+
+            <!-- RIGHT IMAGE -->
+            <div class="col-lg-6 col-12 text-center">
+
+                <img src="{{ url_for('static', filename='img/hero-phone.png') }}" 
+                     class="img-fluid hero-img">
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<!-- PREMIUM HERO END -->
+
+        <!-- Searvices Start -->
+        
+
+        <div class="container-fluid py-5 products-offer">
+    <div class="container-fluid py-5">
+
+    <h2 class="text-center fw-bold mb-4">Shop by Category</h2>
+
+    <div class="row g-4 ">
+
+        <div class="col-6 col-md-3">
+    <a href="{{ url_for('shop') }}?category=Mobiles" class="category-card-new reveal">
+        <img src="{{ url_for('static', filename='img/mobile.png') }}" class="category-img">
+        <span>Mobiles</span>
+    </a>
+</div>
+
+        <div class="col-6 col-md-3">
+    <a href="{{ url_for('shop') }}?category=computers" class="category-card-new reveal">
+        <img src="{{ url_for('static', filename='img/computer.png') }}" class="category-img">
+        <span>Computers</span>
+    </a>
+</div>
+
+        <div class="col-6 col-md-3">
+    <a href="{{ url_for('shop') }}?category=camera" class="category-card-new reveal">
+        <img src="{{ url_for('static', filename='img/camera.png') }}" class="category-img">
+        <span>Camera</span>
+    </a>
+</div>
+
+        <div class="col-6 col-md-3">
+    <a href="{{ url_for('shop') }}?category=watches" class="category-card-new reveal">
+        <img src="{{ url_for('static', filename='img/watch.png') }}" class="category-img">
+        <span>Watches</span>
+    </a>
+</div>
+
+    </div>
+</div>
+
+<div class="container-fluid hero-banner  ">
+
+    <div class="row align-items-center">
+
+        <!-- LEFT TEXT -->
+        <div class="col-lg-6 col-12 hero-text">
+            <h5 class="brand">Electro Specials</h5>
+
+            <h1 class="title">
+                UPGRADE YOUR TECH
+            </h1>
+
+            <p class="offer">
+                Massive Discounts up to ₹15,000
+            </p>
+
+            <a href="{{ url_for('shop') }}" class="btn hero-btn">
+                Shop Now
+            </a>
+        </div>
+
+        <!-- RIGHT IMAGE -->
+        <div class="col-lg-6 col-12 text-center">
+            <img src="{{ url_for('static', filename='img/banner.png') }}" 
+                 class="hero-img">
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<div class="product-slider-section">
+
+    <h2 class="slider-title">Top Deals</h2>
+
+    <div class="slider-wrapper">
+
+        <!-- LEFT BUTTON -->
+        <button class="slider-btn left" onclick="slideLeft()">❮</button>
+
+        <!-- PRODUCTS -->
+        <div class="product-slider" id="productSlider">
+
+            {% for product in products %}
+            <div class="slider-item">
+
+                <div class="modern-card">
+
+                    <div class="img-box">
+
+    {% if product.images and product.images|length > 0 %}
+        <img src="{{ url_for('static', filename=product.images[0].image) }}">
+    
+    {% elif product.image %}
+        <img src="{{ url_for('static', filename=product.image) }}">
+    
+    {% else %}
+        <img src="{{ url_for('static', filename='img/default.png') }}">
+    
+    {% endif %}
+
+</div>
+
+                    <div class="info text-center">
+                        <h6>{{ product.name[:40] }}</h6>
+                        <div class="price">₹{{ product.price }}</div>
+                    </div>
+
+                </div>
+
+            </div>
+            {% endfor %}
+
+        </div>
+
+        <!-- RIGHT BUTTON -->
+        <button class="slider-btn right" onclick="slideRight()">❯</button>
+
+    </div>
+
+</div>
+
+        </div>
+    </div>
+</div>
+
+<div class="trust-section">
+
+    <div class="container">
+
+        <div class="row text-center">
+
+            <div class="col-md-3 col-6 mb-4">
+                <div class="trust-card">
+                    <i class="fas fa-truck"></i>
+                    <h5>Free Delivery</h5>
+                    <p>On all orders above ₹499</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-6 mb-4">
+                <div class="trust-card">
+                    <i class="fas fa-lock"></i>
+                    <h5>Secure Payment</h5>
+                    <p>100% safe transactions</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-6 mb-4">
+                <div class="trust-card">
+                    <i class="fas fa-undo"></i>
+                    <h5>Easy Returns</h5>
+                    <p>7 days return policy</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-6 mb-4">
+                <div class="trust-card">
+                    <i class="fas fa-bolt"></i>
+                    <h5>Fast Shipping</h5>
+                    <p>Quick delivery guaranteed</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="container my-5">
+
+    <h3 class="mb-4">Shop by Brands</h3>
+
+    <div class="row g-4 text-center">
+
+        <div class="col-6 col-md-2">
+    <a href="{{ url_for('shop') }}?brand=Apple">
+        <div class="brand-card">
+            <img src="{{ url_for('static', filename='img/apple.png') }}">
+        </div>
+    </a>
+</div>
+
+<div class="col-6 col-md-2">
+    <a href="{{ url_for('shop') }}?brand=Samsung">
+        <div class="brand-card">
+            <img src="{{ url_for('static', filename='img/samsung.png') }}">
+        </div>
+    </a>
+</div>
+
+        <div class="col-6 col-md-2">
+    <a href="{{ url_for('shop') }}?brand=hp">
+        <div class="brand-card">
+            <img src="{{ url_for('static', filename='img/hp.png') }}">
+        </div>
+    </a>
+</div>
+
+<div class="col-6 col-md-2">
+    <a href="{{ url_for('shop') }}?brand=sony">
+        <div class="brand-card">
+            <img src="{{ url_for('static', filename='img/sony.png') }}">
+        </div>
+    </a>
+</div>
+
+        <div class="col-6 col-md-2">
+    <a href="{{ url_for('shop') }}?brand=dell">
+        <div class="brand-card">
+            <img src="{{ url_for('static', filename='img/dell.png') }}">
+        </div>
+    </a>
+</div>
+
+<div class="col-6 col-md-2">
+    <a href="{{ url_for('shop') }}?brand=lenovo">
+        <div class="brand-card">
+            <img src="{{ url_for('static', filename='img/lenovo.png') }}">
+        </div>
+    </a>
+</div>
+
+    </div>
+
+</div>
+
+<!-- Our Products Start -->
+        <div id="our-products" class="container-fluid product pt-2 pb-3">
+            <div class="container pt-0 pb-2">
+                <div class="tab-class">
+                    <div class="row g-5 mt-1">
+                        <div class="col-lg-4 text-start wow fadeInLeft" data-wow-delay="0.1s">
+                            <h1>{{ t('our_products') }}</h1>
+                            <a href="{{ url_for('shop') }}" class="btn btn-primary rounded-pill">
+    View All →
+</a>
+                        </div>
+                        </div>
+                    <div class="tab-content">
+                        <div id="tab-1" class="tab-pane fade show p-0 active">
+                            <div class="row g-5 mt-1">
+                                
+                    {% for product in products %}
+
+<div class="col-6 col-md-4 col-lg-3 col-xl-2">
+
+    <div class="modern-card">
+
+        <!-- IMAGE -->
+        <div class="img-box">
+            {% if product.images and product.images|length > 0 %}
+                <img src="{{ url_for('static', filename=product.images[0].image) }}">
+            {% elif product.image %}
+                <img src="{{ url_for('static', filename=product.image) }}">
+            {% else %}
+                <img src="{{ url_for('static', filename='img/default.png') }}">
+            {% endif %}
+        </div>
+
+        <!-- INFO -->
+        <div class="info text-center">
+
+            <p class="category">{{ product.category }}</p>
+
+            <h6 class="title">
+                {{ product.name[:50] }}{% if product.name|length > 50 %}...{% endif %}
+            </h6>
+
+            <div class="price fw-bold text-primary">
+                ₹{{ product.price }}
+            </div>
+
+        </div>
+
+        <!-- ACTION -->
+        <div class="hover-actions">
+            <a href="{{ url_for('product_detail', id=product.id) }}">👁</a>
+            <a href="{{ url_for('add_to_cart', id=product.id) }}">🛒</a>
+        </div>
+
+    </div>
+
+</div>
+
+{% endfor %}
+
+
+            </div> <!-- row -->
+        </div> <!-- tab-pane -->
+    </div> <!-- tab-content -->
+</div> <!-- tab-class -->
+</div> <!-- container -->
+</div> <!-- container-fluid -->  
+
+{% endblock %}  
+
+<!-- Footer Start -->
+        <div class="container-fluid footer py-5 wow fadeIn" data-wow-delay="0.2s">
+            <div class="container py-5">
+                <div class="row g-4 rounded mb-5 footer-box">
+                    <div class="col-md-6 col-lg-6 col-xl-3">
+                        <div class="rounded p-4">
+                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-4" style="width: 70px; height: 70px;">
+                                <i class="fas fa-map-marker-alt fa-2x text-primary"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white">Address</h4>
+                                <p class="mb-2">kochi, Kerala, India</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6 col-xl-3">
+                        <div class="rounded p-4">
+                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-4" style="width: 70px; height: 70px;">
+                                <i class="fas fa-envelope fa-2x text-primary"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white">Mail Us</h4>
+                                <a href="mailto:support@electrostore.com">support@electrostore.com</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6 col-xl-3">
+                        <div class="rounded p-4">
+                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-4" style="width: 70px; height: 70px;">
+                                <i class="fa fa-phone-alt fa-2x text-primary"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white">Telephone</h4>
+                                <p class="mb-2">+91 98765 43210</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6 col-xl-3">
+                        <div class="rounded p-4">
+                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center mb-4" style="width: 70px; height: 70px;">
+                                <i class="fas fa-clock fa-2x text-primary"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-white">Opening Hours</h4>
+                                <p class="mb-1 text-light">Mon - Sat: 9:00 AM - 9:00 PM</p>
+                                <p class="mb-0 text-light">Sunday: Closed</p>
+                            </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-5">
+                    <div class="col-md-6 col-lg-6 col-xl-3">
+                        <div class="footer-item d-flex flex-column">
+                            <div class="footer-item">
+                                <h4 class="text-primary mb-4">Newsletter</h4>
+                                <p class="mb-3">Subscribe to get latest offers, new arrivals, and exclusive discounts directly to your inbox.</p>
+                                <div class="position-relative mx-auto rounded-pill">
+                                    <form method="POST" action="{{ url_for('subscribe') }}">
+                                        <input class="form-control rounded-pill w-100 py-3 ps-4 pe-5"
+                                               type="email"
+                                               name="email"
+                                               placeholder="Enter your email"
+                                               required>
+
+                                        <button type="submit"
+                                                class="btn btn-primary rounded-pill position-absolute top-0 end-0 py-2 mt-2 me-2">
+                                            Sign Up
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6 col-xl-3">
+                        <div class="footer-item d-flex flex-column">
+                            <h4 class="text-primary mb-4">Customer Service</h4>
+
+                            <a href="{{ url_for('contact') }}">
+                                <i class="fas fa-angle-right me-2"></i> Contact Us
+                            </a>
+
+                            <a href="{{ url_for('returns') }}">
+                               <i class="fas fa-angle-right me-2"></i> Returns
+                            </a>
+
+                            <a href="{{ url_for('orders') }}">
+                               <i class="fas fa-angle-right me-2"></i> Order History
+                            </a>
+                               
+
+                            <a href="{{ url_for('account') }}">
+                                <i class="fas fa-angle-right me-2"></i> My Account
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6 col-xl-3">
+                        <div class="footer-item d-flex flex-column">
+                            <h4 class="text-primary mb-4">Information</h4>
+                            <a href="{{ url_for('about') }}">
+                                <i class="fas fa-angle-right me-2"></i> About Us
+                            </a>
+
+                            <a href="{{ url_for('privacy') }}">
+                                <i class="fas fa-angle-right me-2"></i> Privacy Policy
+                            </a>
+
+                            <a href="{{ url_for('terms') }}">
+                                <i class="fas fa-angle-right me-2"></i> Terms & Conditions
+                            </a>
+
+                            <a href="{{ url_for('faq') }}">
+                                <i class="fas fa-angle-right me-2"></i> FAQ
+                            </a>
+                            <a href="{{ url_for('login', next='seller_page') }}" class=""><i class="fas fa-angle-right me-2"></i>
+                                 Start Selling
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-6 col-xl-3">
+                        <div class="footer-item d-flex flex-column">
+                            <h4 class="text-primary mb-4">Extras</h4>
+                            <a href="{{ url_for('wishlist') }}">
+                               <i class="fas fa-angle-right me-2"></i> Wishlist
+                            </a>
+
+                            <a href="{{ url_for('orders') }}">
+                                <i class="fas fa-angle-right me-2"></i> Order History
+                            </a>
+                               
+
+                            <a href="{{ url_for('track_order') }}">
+                                <i class="fas fa-angle-right me-2"></i> Track Your Order
+                            </a>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Footer End -->
+
+        
+        <!-- Copyright Start -->
+        <div class="container-fluid copyright py-4">
+            <div class="container-fluid">
+                <div class="row g-4 align-items-center">
+                    <div class="col-md-6 text-center text-md-start mb-md-0">
+                        <span class="text-white"><a href="#" class="border-bottom text-white"><i class="fas fa-copyright text-light me-2"></i>© 2026 Electro Store.</a>, All Rights Reserved.</span>
+                    </div>
+                    
+                </div>
+            </div>
+        </div>
+        <!-- Copyright End -->
+
+
+        <!-- Back to Top -->
+        <a href="#" class="btn btn-primary btn-lg-square back-to-top"><i class="fa fa-arrow-up"></i></a>   
+
+        
+    <!-- JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='lib/wow/wow.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='lib/owlcarousel/owl.carousel.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    
+
+
+    
+
+<script>
+// ===== SIDE MENU =====
+function openMenu() {
+    document.getElementById("sideMenu").style.left = "0";
+    document.getElementById("overlay").style.display = "block";
+}
+
+function closeMenu() {
+    document.getElementById("sideMenu").style.left = "-260px";
+    document.getElementById("overlay").style.display = "none";
+}
+
+
+// ===== CLOSE CATEGORY MENU ON CLICK =====
+document.querySelectorAll('.category-link').forEach(link => {
+    link.addEventListener('click', function () {
+        let menu = document.getElementById("allCat");
+        let collapse = bootstrap.Collapse.getInstance(menu);
+        if (collapse) collapse.hide();
+    });
+});
+
+
+// ===== CLOSE CATEGORY MENU WHEN CLICK OUTSIDE =====
+document.addEventListener('click', function (e) {
+
+    let menu = document.getElementById("allCat");
+    
+
+    // 🔥 VERY IMPORTANT FIX (prevents dropdown breaking)
+    if (e.target.closest('.dropdown')) return;
+
+    if (!menu) return;
+    
+
+    if (!menu.contains(e.target)) {
+       let collapse = bootstrap.Collapse.getInstance(menu);
+       if (collapse) collapse.hide();
+
+    }
+});
+
+window.addEventListener('load', function () {
+    const spinner = document.getElementById("spinner");
+    if (spinner) {
+        spinner.style.display = "none";
+    }
+});
+
+function revealOnScroll() {
+    let elements = document.querySelectorAll('.reveal');
+
+    elements.forEach(el => {
+        let windowHeight = window.innerHeight;
+        let elementTop = el.getBoundingClientRect().top;
+
+        if (elementTop < windowHeight - 100) {
+            el.classList.add('active');
+        }
+    });
+}
+
+window.addEventListener('scroll', revealOnScroll);
+
+function slideLeft() {
+    document.getElementById('productSlider').scrollBy({
+        left: -300,
+        behavior: 'smooth'
+    });
+}
+
+function slideRight() {
+    document.getElementById('productSlider').scrollBy({
+        left: 300,
+        behavior: 'smooth'
+    });
+}
+
+
+setInterval(() => {
+    document.getElementById('productSlider').scrollBy({
+        left: 200,
+        behavior: 'smooth'
+    });
+}, 4000);
+
+</script>
+
+    </body>
+
+</html>
